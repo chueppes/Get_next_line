@@ -6,7 +6,7 @@
 /*   By: acalvo4 <acalvo4@student.42.rio>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 14:56:18 by acalvo4           #+#    #+#             */
-/*   Updated: 2022/06/02 15:56:52 by acalvo4          ###   ########.fr       */
+/*   Updated: 2022/06/03 15:27:24 by acalvo4          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,32 @@
 
 char *get_next_line(int fd)
 {
-	char *mem;
-	char *line;
-	char *buffersize;
-	
-	
+	static char *temp;
+	char	*line;
+	char	*buffer;
+	int		*aux;
+	buffer = malloc(BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
+	aux = read(fd, buffer, BUFFER_SIZE)
+	if (aux == NULL || *aux == '\0')
+	{
+		free(aux);
+		return(NULL);
+	}
+	line = ft_line_read_line(aux);
 
+	 
+	
+	
 }
+
+char ft_read_line(char *aux)
+{
+	char *line;
+	while (*aux != '\n')
+	{
+		*line = *aux;
+		line ++;
+		aux ++;
+	I}
