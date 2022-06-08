@@ -26,7 +26,7 @@ char *get_next_line(int fd)
 	//char *temp;
 	//char *str;
 	char *str2;
-	//char *str3;
+	char *str3;
 
 	// the following line shows me the possible entry errors that may occur
 	// if i don't have a file, if the file is bigger than OPEN_MAX which id the max value of open()
@@ -86,39 +86,35 @@ char *get_next_line(int fd)
 	// size of my line which is contained in i, then i will copy my buffer content 
 	// in str3 until i find the end of my buffer. after that i will set \0 and put _this
 	// into my static variable line, and then return it.
-	// int j;
-	// j = 0;
-	// i = 0;
-	// while (buffer[i] && buffer[i] != '\n')
-	// 	i++;
-	// str3 = malloc((ft_strlen(buffer) - (i + 1)) * sizeof(char *));
-	// if(!str3)
-	// 	return(NULL);
-	
-	// while (buffer && buffer[i])
-	// 	str3[j++] = buffer[++i];
-	// str3[j] = '\0';
-	// line = str3;
-	// free(buffer);
+	int j;
+	j = 0;
+	str3 = malloc((ft_strlen(buffer) - (i + 1)) * sizeof(char *));
+	if(!str3)
+		return(NULL);
+	while (buffer[i] != '\0')
+		str3[j++] = buffer[i++];
+	str3[j] = '\0';
+	line = str3;
+	free(buffer);
 
-	return (str2);
+	return (str3);
 	//it did not worked. i dont know where or how to use the static variable.
 }
 
-int main (){
+// int main (){
 	
-	static char *line;
-	int fd;
-	fd = open ("x.txt", O_RDONLY);
-	line = get_next_line(fd);
-	//while (line)
-	//{
-		//line = get_next_line(fd);
-	printf("%s", line);
-	//}
-	free(line);
-	close(fd);
-}
+// 	static char *line;
+// 	int fd;
+// 	fd = open ("x.txt", O_RDONLY);
+// 	line = get_next_line(fd);
+// 	//while (line)
+// 	//{
+// 		//line = get_next_line(fd);
+// 	printf("%s", line);
+// 	//}
+// 	free(line);
+// 	close(fd);
+// }
 
 /*int	main(void)
 {
