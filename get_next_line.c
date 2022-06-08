@@ -20,7 +20,7 @@
 
 char *get_next_line(int fd)
 {
-	char *line;
+	static char *line;
 	int aux;
 	char *buffer;
 	//char *temp;
@@ -42,14 +42,15 @@ char *get_next_line(int fd)
 	if (!buffer)
 		return (NULL);
 	aux = 1;
+	line = malloc(1 * sizeof(char*));
 	// while i dont have a bad response from aux or found \n in my string
 	// i keep on reading it, then i set buffer at aux size as \0
 	// then i join what the buffer read in the last loop with what it is reading now
 	// this part returns an odd result. if i set BUFFER_SIZE as 1 it returns me 
 	// the first string, if i set it as 6, it returns the first one and a part of the second line too
 	// but if i set as 10 it returns only the first line.
-	// i donk know why that happens, its a strange behavior, it doesnt has a logical
-	// correspondence. i will try to treat my string after this so it only gets the first.
+	// that happens because the read function reads BUFFER_SIZE bytes per time untill it finds a \n in itself
+	// so it keeps more than it should. 
 	while (aux != 0 && !(ft_strchr(line, '\n')))
 	{
 		aux = read(fd, buffer, BUFFER_SIZE);
@@ -91,30 +92,31 @@ char *get_next_line(int fd)
 	str3 = malloc((ft_strlen(buffer) - (i + 1)) * sizeof(char *));
 	if(!str3)
 		return(NULL);
-	while (buffer[i] != '\0')
+	while (buffer && buffer[i])
 		str3[j++] = buffer[i++];
 	str3[j] = '\0';
 	line = str3;
 	free(buffer);
 
-	return (str3);
+	return (str2);
 	//it did not worked. i dont know where or how to use the static variable.
 }
 
-// int main (){
+/* int main (){
 	
-// 	static char *line;
-// 	int fd;
-// 	fd = open ("x.txt", O_RDONLY);
-// 	line = get_next_line(fd);
-// 	//while (line)
-// 	//{
-// 		//line = get_next_line(fd);
-// 	printf("%s", line);
-// 	//}
-// 	free(line);
-// 	close(fd);
-// }
+static char *line;
+int fd;
+fd = open ("x.txt", O_RDONLY);
+line = get_next_line(fd);
+	while (line)
+	{
+		
+ 		printf("%s", line);
+		line = get_next_line(fd);
+	}
+ 	free(line);
+ 	close(fd);
+ }*/
 
 /*int	main(void)
 {
