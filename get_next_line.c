@@ -20,10 +20,13 @@
 
 char *get_next_line(int fd)
 {
-	static char *line;
+	char *line;
 	int aux;
 	char *buffer;
-	char *temp;
+	//char *temp;
+	//char *str;
+	char *str2;
+	//char *str3;
 
 	// the following line shows me the possible entry errors that may occur
 	// if i don't have a file, if the file is bigger than OPEN_MAX which id the max value of open()
@@ -39,50 +42,68 @@ char *get_next_line(int fd)
 	if (!buffer)
 		return (NULL);
 	aux = 1;
-	// temp = buffer;
-	//checks if line[fd] has \n in it
-	// so, while line doesn't shows me a '\n' i keep on reading the file
-	// if the read command fails it returns the function
-	// else, it puts a line break at the buffer at aux position
-	// after that, it joins the temporary variable which holds the buffer old value
-	// if frees the temporary variable 
-	// the it checks if the line contains a '\n'
-	// i tried on using this comparation first, as a condition to my 'while'
-	// as if if its not a \n i follow the code, but it didn't worked. i dont know why
-	/*while (aux > 0)
+	// while i dont have a bad response from aux or found \n in my string
+	// i keep on reading it, then i set buffer at aux size as \0
+	// then i join what the buffer read in the last loop with what it is reading now
+	// this part returns an odd result. if i set BUFFER_SIZE as 1 it returns me 
+	// the first string, if i set it as 6, it returns the first one and a part of the second line too
+	// but if i set as 10 it returns only the first line.
+	// i donk know why that happens, its a strange behavior, it doesnt has a logical
+	// correspondence. i will try to treat my string after this so it only gets the first.
+	while (aux != 0 && !(ft_strchr(line, '\n')))
 	{
 		aux = read(fd, buffer, BUFFER_SIZE);
-		if (aux < 0)
-			return(NULL);//-1
-		buffer[aux] = '\0';
-		temp = line;
-		line  = ft_strjoin(temp, buffer);
-		//free(temp);
-		if (ft_strchr(line, '\n'))
-			break;
-	}*/
-
-	while (aux > 0)
-	{
-		aux = read(fd, buffer, BUFFER_SIZE);
-		if (aux < 0)
+		if (aux == -1)
+		{
+			free (buffer);
 			return (NULL);
-		buffer[aux]
-		temp = line;
-		line = ft_strjoin(temp + fd, buffer);
-		if (ft_strchr(line + fd, '\n'))
-			break ;	
+		}
+		buffer[aux] = '\0';
+		line = ft_strjoin(line, buffer);
 	}
-	// i'm trying to find out how to read one line.
-	// at this point my code shows me the value if i retur the buffer
-	free(buffer);
+	// i'm gonna try to make it return ONLY the first line.
+	// for that i'm gonna mesure the size of my buffer until \n 
+	// and then allocate that size of memory in another string
+	// after that i will call strlcpy to copy everything to my return string  
+	// and lastly set \n and \0.
+
+	int i;
+	i = 0;
+
+	while (buffer[i] && buffer[i] != '\n')
+		i++;
+	str2 = malloc((i + 2) * sizeof(char *));
+	if (!str2)
+		return (NULL);
+	ft_strlcpy(str2, buffer, i + 1);
+	str2[i ++] = '\n';
+	str2[i] = '\0';
+	// it worked! now i have to overwrite my static variable with itself after 
+	// the first occurence of '\n' notice that at this point i could've 
+	// used strdup, but since my own strdup made in libft contains too many functions
+	// i will try on doing it by a different way. 
+	// for that i will allocate a str3 with the total length of my buffer minus the
+	// size of my line which is contained in i, then i will copy my buffer content 
+	// in str3 until i find the end of my buffer. after that i will set \0 and put _this
+	// into my static variable line, and then return it.
+	// int j;
+	// j = 0;
+	// i = 0;
+	// while (buffer[i] && buffer[i] != '\n')
+	// 	i++;
+	// str3 = malloc((ft_strlen(buffer) - (i + 1)) * sizeof(char *));
+	// if(!str3)
+	// 	return(NULL);
 	
+	// while (buffer && buffer[i])
+	// 	str3[j++] = buffer[++i];
+	// str3[j] = '\0';
+	// line = str3;
+	// free(buffer);
 
-	return (line);
+	return (str2);
+	//it did not worked. i dont know where or how to use the static variable.
 }
-
-//char *ft_read_line_fd( char *line, int fd){
-//}
 
 int main (){
 	
@@ -90,12 +111,12 @@ int main (){
 	int fd;
 	fd = open ("x.txt", O_RDONLY);
 	line = get_next_line(fd);
-	while (line)
-	{
+	//while (line)
+	//{
 		//line = get_next_line(fd);
-		printf("%s", line);
-	}
-	//free(line);
+	printf("%s", line);
+	//}
+	free(line);
 	close(fd);
 }
 
