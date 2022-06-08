@@ -15,16 +15,11 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-
-//char *ft_read_line_fd( char *line, int fd);
-
 char *get_next_line(int fd)
 {
 	static char *line;
 	int aux;
 	char *buffer;
-	//char *temp;
-	//char *str;
 	char *str2;
 	char *str3;
 
@@ -34,15 +29,15 @@ char *get_next_line(int fd)
 	// according to the rules, it showld return -1 if an error has occured
 	// but i still don't know how to do it. 
 	if (fd < 0 || fd >= 1024 || BUFFER_SIZE <= 0)
-		return (NULL);//-1
-	// line = ft_read_line_fd(line, fd);
+		return ("erro1");//-1
 	// if everything is ok with the entry values it mallocates my buffer 
 	// with the BUFFER_SIZE + 1 (the null byte) and then i check if the malloc occured fine 
-	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char *));
+	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buffer)
-		return (NULL);
+		return ("erro2");
 	aux = 1;
-	line = malloc(1 * sizeof(char*));
+	if (!line)
+		line = malloc(1 * sizeof(char));
 	// while i dont have a bad response from aux or found \n in my string
 	// i keep on reading it, then i set buffer at aux size as \0
 	// then i join what the buffer read in the last loop with what it is reading now
@@ -57,7 +52,7 @@ char *get_next_line(int fd)
 		if (aux == -1)
 		{
 			free (buffer);
-			return (NULL);
+			return ("erro3");
 		}
 		buffer[aux] = '\0';
 		line = ft_strjoin(line, buffer);
@@ -68,14 +63,14 @@ char *get_next_line(int fd)
 	// after that i will call strlcpy to copy everything to my return string  
 	// and lastly set \n and \0.
 
-	int i;
+	size_t i;
 	i = 0;
 
 	while (buffer[i] && buffer[i] != '\n')
 		i++;
-	str2 = malloc((i + 2) * sizeof(char *));
+	str2 = malloc((i + 2) * sizeof(char));
 	if (!str2)
-		return (NULL);
+		return ("erro4");
 	ft_strlcpy(str2, buffer, i + 1);
 	str2[i ++] = '\n';
 	str2[i] = '\0';
@@ -87,64 +82,51 @@ char *get_next_line(int fd)
 	// size of my line which is contained in i, then i will copy my buffer content 
 	// in str3 until i find the end of my buffer. after that i will set \0 and put _this
 	// into my static variable line, and then return it.
-	int j;
-	j = 0;
-	str3 = malloc((ft_strlen(buffer) - (i + 1)) * sizeof(char *));
-	if(!str3)
-		return(NULL);
-	while (buffer && buffer[i])
-		str3[j++] = buffer[i++];
-	str3[j] = '\0';
-	line = str3;
-	free(buffer);
+	// if (line == NULL && aux == 0)
+	//		return (NULL);
+	if (ft_strlen(buffer) > (i + 2))
+	{
+		int j;
+		j = 0;
 
+		str3 = malloc((ft_strlen(buffer) - (i + 1)) * sizeof(char));
+		if(!str3)
+			return("erro5");
+		while (buffer[i])
+			str3[j++] = buffer[i++];
+		str3[j++] = '\0';
+		i = 0;
+		while (str3[i]){
+			line[i] = str3[i];
+			i++;
+		}
+	}
+	free (buffer);
 	return (str2);
-	//it did not worked. i dont know where or how to use the static variable.
+	// it did not worked. i dont know where or how to use the static variable.
+	// the problem was that i wasn't allocating my line variable with no value 
 }
 
-/* int main (){
+
+static char ft_read(char *line, char *buffer)
+{
+	int aux;
+	aux = 1;
 	
+}
+
+int main ()
+{	
 static char *line;
 int fd;
+int i = 5;
 fd = open ("x.txt", O_RDONLY);
-line = get_next_line(fd);
-	while (line)
+	while (i--)
 	{
-		
- 		printf("%s", line);
 		line = get_next_line(fd);
+ 		printf("%s", line);
+		
 	}
  	free(line);
  	close(fd);
- }*/
-
-/*int	main(void)
-{
-	char	*line;
-	int		i;
-	int		fd1;
-	int		fd2;
-	int		fd3;
-	fd1 = open("tests/test.txt", O_RDONLY);
-	fd2 = open("tests/test2.txt", O_RDONLY);
-	fd3 = open("tests/test3.txt", O_RDONLY);
-	i = 1;
-	while (i < 7)
-	{
-		line = get_next_line(fd1);
-		printf("line [%02d]: %s", i, line);
-		free(line);
-		line = get_next_line(fd2);
-		printf("line [%02d]: %s", i, line);
-		free(line);
-		line = get_next_line(fd3);
-		printf("line [%02d]: %s", i, line);
-		free(line);
-		i++;
-	}
-	close(fd1);
-	close(fd2);
-	close(fd3);
-	return (0);
-}*/
-
+ }
