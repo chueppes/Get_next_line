@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -21,21 +21,21 @@ static char	*ft_overwrite(char *line);
 
 char	*get_next_line(int fd)
 {
-	static char		*line;
+	static char		*line[4046];
 	char			*result;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (!line)
+	if (!line[fd])
 	{
-		line = malloc(1 * sizeof(char));
-		line[0] = '\0';
+		line[fd] = malloc(1 * sizeof(char));
+		//line[fd] = '\0';
 	}
-	line = ft_read(line, fd);
-	if (!line)
+	line[fd] = ft_read(line[fd], fd);
+	if (!line[fd])
 		return (NULL);
-	result = ft_oneline(line);
-	line = ft_overwrite(line);
+	result = ft_oneline(line[fd]);
+	line[fd] = ft_overwrite(line[fd]);
 	return (result);
 }
 
