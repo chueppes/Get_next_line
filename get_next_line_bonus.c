@@ -26,11 +26,6 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (!line[fd])
-	{
-		line[fd] = malloc(1 * sizeof(char));
-		//line[fd] = '\0';
-	}
 	line[fd] = ft_read(line[fd], fd);
 	if (!line[fd])
 		return (NULL);
@@ -45,6 +40,8 @@ static char	*ft_read(char *line, int fd)
 	char	*buffer;
 	char	*temp;
 
+	if (!line)
+		line = malloc(1 * sizeof(char));
 	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buffer)
 		return (NULL);
@@ -53,16 +50,14 @@ static char	*ft_read(char *line, int fd)
 	{
 		aux = read(fd, buffer, BUFFER_SIZE);
 		if (aux == -1)
-		{
-			free (buffer);
-			free (line);
-			return (NULL);
-		}
+			break ;
 		buffer[aux] = '\0';
 		temp = line;
 		line = ft_strjoin(temp, buffer);
 		free(temp);
 	}
+	if (aux == -1)
+		free(line);
 	free(buffer);
 	return (line);
 }

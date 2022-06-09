@@ -1,5 +1,0 @@
-isso é uma linha 
-de um arquivo de texto 
-para um teste de programa
-essa é a quarta linha
-e essa é a ultima linha.
