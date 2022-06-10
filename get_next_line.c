@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <unistd.h>
-#include <stdio.h>
-#include <fcntl.h>
 
 static char	*ft_read(char *line, int fd);
 static char	*ft_oneline(char *buffer);
@@ -113,20 +110,3 @@ static char	*ft_overwrite( char *line)
 	free (line);
 	return (str3);
 }
-
-// int main ()
-// {	
-// static char *line;
-// int fd;
-// //int i = 5;
-// fd = 1;
-// line = get_next_line(fd);
-// 	while (line)
-// 	{
-// 		printf("%s", line);
-// 		line = get_next_line(fd);
-// 		printf("---------\n");
-// 	}
-//  	free(line);
-//  	close(fd);
-//  }

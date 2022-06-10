@@ -11,21 +11,20 @@
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
-#include <unistd.h>
-#include <stdio.h>
-#include <fcntl.h>
 
-static char	*ft_read(char *line, int fd);
-static char	*ft_oneline(char *buffer);
-static char	*ft_overwrite(char *line);
+char	*ft_read(char *line, int fd);
+char	*ft_oneline(char *buffer);
+char	*ft_overwrite(char *line);
 
 char	*get_next_line(int fd)
 {
-	static char		*line[4046];
+	static char		*line[256];
 	char			*result;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
+	if (!line[fd])
+		line[fd] = ft_strjoin("", "");
 	line[fd] = ft_read(line[fd], fd);
 	if (!line[fd])
 		return (NULL);
@@ -34,14 +33,12 @@ char	*get_next_line(int fd)
 	return (result);
 }
 
-static char	*ft_read(char *line, int fd)
+char	*ft_read(char *line, int fd)
 {
 	int		aux;
 	char	*buffer;
 	char	*temp;
 
-	if (!line)
-		line = malloc(1 * sizeof(char));
 	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buffer)
 		return (NULL);
@@ -50,19 +47,21 @@ static char	*ft_read(char *line, int fd)
 	{
 		aux = read(fd, buffer, BUFFER_SIZE);
 		if (aux == -1)
-			break ;
+		{
+			free (buffer);
+			free (line);
+			return (NULL);
+		}
 		buffer[aux] = '\0';
 		temp = line;
 		line = ft_strjoin(temp, buffer);
 		free(temp);
 	}
-	if (aux == -1)
-		free(line);
 	free(buffer);
 	return (line);
 }
 
-static char	*ft_oneline(char *line)
+char	*ft_oneline(char *line)
 {
 	char	*str2;
 	size_t	i;
@@ -82,7 +81,7 @@ static char	*ft_oneline(char *line)
 	return (str2);
 }
 
-static char	*ft_overwrite( char *line)
+char	*ft_overwrite( char *line)
 {
 	char	*str3;	
 	size_t	i;
@@ -108,20 +107,3 @@ static char	*ft_overwrite( char *line)
 	free (line);
 	return (str3);
 }
-
-// int main ()
-// {	
-// static char *line;
-// int fd;
-// //int i = 5;
-// fd = 1;
-// line = get_next_line(fd);
-// 	while (line)
-// 	{
-// 		printf("%s", line);
-// 		line = get_next_line(fd);
-// 		printf("---------\n");
-// 	}
-//  	free(line);
-//  	close(fd);
-//  }
